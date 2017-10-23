@@ -1,0 +1,239 @@
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dupliDrawer"
+    android:fitsSystemWindows="true"
+    android:layout_gravity="left"
+    app:layout_anchorGravity="left"
+    app:layout_collapseMode="parallax"
+    tools:openDrawer="start"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <io.codetail.widget.RevealLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/revMainViewHolder">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/linMainRevealChild">
+
+            <android.support.design.widget.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/AppTheme.AppBarOverlay">
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/dupliToolbar"
+                    android:layout_width="match_parent"
+                    android:background="@color/colorPrimary"
+                    android:layout_height="?attr/actionBarSize"
+                    app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+            </android.support.design.widget.AppBarLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <!-- 0th view an image -->
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/fullbg"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"/>
+
+                <!-- 1st view, a shading -->
+                <View android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#88000000"/>
+
+                <!-- 2nd view -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/op_pier0"
+                        android:padding="15dp"
+                        android:splitMotionEvents="false"
+                        android:id="@+id/linCircleBg"
+                        android:layout_centerInParent="true">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="2"
+                            android:splitMotionEvents="false">
+
+                            <LinearLayout
+                                android:layout_width="115dp"
+                                android:layout_height="115dp"
+                                android:orientation="vertical"
+                                android:gravity="center_vertical|right"
+                                android:padding="15dp"
+                                android:splitMotionEvents="false"
+                                android:id="@+id/linTexts"
+                                android:background="@drawable/op_pie1">
+
+                                <ImageView
+                                    android:id="@+id/imgWriteNote"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:src="@drawable/notepad" />
+
+                                <TextView
+                                    android:id="@+id/txtWriteNote"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Texts"
+                                    android:layout_marginTop="1dp"
+                                    android:textSize="18sp"
+                                    android:textColor="@android:color/white" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="115dp"
+                                android:layout_height="115dp"
+                                android:orientation="vertical"
+                                android:gravity="center_vertical|left"
+                                android:padding="15dp"
+                                android:splitMotionEvents="false"
+                                android:id="@+id/linImages"
+                                android:layout_marginLeft="8dp"
+                                android:background="@drawable/op_pie2">
+
+                                <ImageView
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:id="@+id/imgDraw"
+                                    android:src="@drawable/camera"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Images"
+                                    android:layout_marginTop="1dp"
+                                    android:textSize="18sp"
+                                    android:textColor="@android:color/white"/>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:splitMotionEvents="false"
+                            android:layout_marginTop="8dp">
+
+                            <LinearLayout
+                                android:layout_width="115dp"
+                                android:layout_height="115dp"
+                                android:orientation="vertical"
+                                android:gravity="center_vertical|right"
+                                android:padding="15dp"
+                                android:splitMotionEvents="false"
+                                android:id="@+id/linAudio"
+                                android:background="@drawable/op_pie3">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Audios"
+                                    android:id="@+id/txtRecord"
+                                    android:textSize="17sp"
+                                    android:textColor="@android:color/white"/>
+
+                                <ImageView
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:id="@+id/imgRecord"
+                                    android:layout_marginTop="3dp"
+                                    android:src="@drawable/recording"/>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="115dp"
+                                android:layout_height="115dp"
+                                android:orientation="vertical"
+                                android:gravity="center_vertical|left"
+                                android:padding="15dp"
+                                android:splitMotionEvents="false"
+                                android:id="@+id/linVideos"
+                                android:layout_marginLeft="8dp"
+                                android:background="@drawable/op_pie4">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Videos"
+                                    android:textSize="17sp"
+                                    android:textColor="@android:color/white"/>
+
+                                <ImageView
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:src="@drawable/play"
+                                    android:id="@+id/imgPinit"
+                                    android:layout_marginTop="3dp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="3"
+                        android:visibility="visible"
+                        android:splitMotionEvents="false"
+                        android:layout_alignParentBottom="true"
+                        android:background="@drawable/crescentodrawablebottom">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="12dp"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:text="Brought to you by Soumen Ganguly\nVery hopeful for a Capgemini position.. :D"
+                            android:textColor="@android:color/white"
+                            android:textSize="14sp"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </io.codetail.widget.RevealLinearLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/navMenu"
+        android:layout_width="315dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/drawer_header_section"
+        app:menu="@menu/menu_main"
+        android:visibility="visible"
+        android:background="@android:color/white"/>
+
+</android.support.v4.widget.DrawerLayout>

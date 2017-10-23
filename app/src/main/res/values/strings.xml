@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">DupliDoc</string>
+
+    <string name="title_activity_welcome">Home Screen</string>
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="start">GOT IT</string>
+
+    <string name="opendrawer">Open</string>
+    <string name="closedrawer">Close</string>
+
+</resources>
