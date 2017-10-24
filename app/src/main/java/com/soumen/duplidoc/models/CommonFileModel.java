@@ -15,7 +15,7 @@ public class CommonFileModel implements Serializable {
     private String fileTakenDate;
     private int fileHeight;
     private int fileWidth;
-    private int fileSize;
+    private long fileSize;
     private String album;
     private String artist;
     private String duration;
@@ -76,11 +76,11 @@ public class CommonFileModel implements Serializable {
         this.fileWidth = fileWidth;
     }
 
-    public int getFileSize() {
+    public long getFileSize() {
         return fileSize;
     }
 
-    public void setFileSize(int fileSize) {
+    public void setFileSize(long fileSize) {
         this.fileSize = fileSize;
     }
 

@@ -26,11 +26,11 @@ public class AllDuplicatefileAdapter extends RecyclerView.Adapter<FileHolder> {
 
     private int lastPosition = -1;
     Context mContext;
-    ArrayList<CommonFileModel> imageList;
+    ArrayList<CommonFileModel> fileList;
 
-    public AllDuplicatefileAdapter(Context mContext, ArrayList<CommonFileModel> imageList) {
+    public AllDuplicatefileAdapter(Context mContext, ArrayList<CommonFileModel> fileList) {
         this.mContext = mContext;
-        this.imageList = imageList;
+        this.fileList = fileList;
     }
 
     @Override
@@ -42,16 +42,16 @@ public class AllDuplicatefileAdapter extends RecyclerView.Adapter<FileHolder> {
 
     @Override
     public void onBindViewHolder(FileHolder holder, int position) {
-        holder.txtFileName.setText(imageList.get(position).getFileDisplayName());
-        holder.txtFileSize.setText("Size " + String.format("%.2f", getMemoryInMb(imageList.get(position).getFileSize())) + "Mb");
-        holder.txtFileAddDate.setText("Added On " + formattedDate(Long.parseLong(imageList.get(position).getFileAddedDate())));
-
+        holder.txtFileName.setText(fileList.get(position).getFileDisplayName());
+        holder.txtFileSize.setText("Size    " + String.format("%.2f", getMemoryInMb(fileList.get(position).getFileSize())) + "Mb");
+        holder.txtFileAddDate.setText("Added On    " + formattedDate(Long.parseLong(fileList.get(position).getFileAddedDate())));
+        holder.txtFilePath.setText("Path    " + fileList.get(position).getFilePath());
         setAnimation(holder.itemView, position);
     }
 
     @Override
     public int getItemCount() {
-        return (null != imageList ? imageList.size() : 0);
+        return (null != fileList ? fileList.size() : 0);
     }
 
     private void setAnimation(View viewToAnimate, int position) {

@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -27,6 +28,7 @@ import com.soumen.duplidoc.enums.FileType;
 import com.soumen.duplidoc.extras.AppCommonValues;
 import com.soumen.duplidoc.models.CommonFileModel;
 import com.soumen.duplidoc.utils.HelveticaBoldTextView;
+import com.soumen.duplidoc.utils.StorageHelper;
 
 import java.util.ArrayList;
 
@@ -45,6 +47,7 @@ public class FileListDetailsActivity extends AppCompatActivity implements FileLi
     private RecyclerView rclDuplicateList;
 
     /* asynctask object */
+    private boolean isExternalStorageAvailable;
     private FetchFilesAsyncTask mFetchFilesAsyncTask;
 
     @Override
@@ -54,7 +57,17 @@ public class FileListDetailsActivity extends AppCompatActivity implements FileLi
         fileType = (FileType) getIntent().getSerializableExtra(AppCommonValues.FILETAG);
         if (fileType != null) {
             setContentView(R.layout.activity_file_details);
-            firstCheckForPermission();
+
+            /* give a delay, so that things appear after that */
+            final Handler mHandler = new Handler();
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mHandler.removeCallbacks(this);
+                    isExternalStorageAvailable = new StorageHelper().isExternalStorageReadable();
+                    firstCheckForPermission();
+                }
+            }, 250);
         }
     }
 
@@ -158,8 +171,9 @@ public class FileListDetailsActivity extends AppCompatActivity implements FileLi
                         if ((i1.getFileDisplayName().equalsIgnoreCase(i2.getFileDisplayName())) &&
                                 (i1.getFileSize() == i2.getFileSize()) &&
                                 (i1.getFileHeight() == i2.getFileHeight()) &&
-                                (i1.getFileWidth() == i2.getFileWidth())) {
-                            if (!deletableFiles.contains(i2)) {
+                                (i1.getFileWidth() == i2.getFileWidth()) &&
+                                !(i1.getFilePath().equalsIgnoreCase(i2.getFilePath()))) {
+                            if(!deletableFiles.contains(i2)) {
                                 recoverableMemory += i2.getFileSize();
                                 deletableFiles.add(i2);
                             }
@@ -169,9 +183,10 @@ public class FileListDetailsActivity extends AppCompatActivity implements FileLi
                     }
                 } else if (fileType == FileType.AUDIO || fileType == FileType.VIDEO) {
                     try {
-                        if ((i1.getFileDisplayName().equalsIgnoreCase(i2.getFileDisplayName()))) {
-                            Log.e("file size", "" + i2.getFileSize());
-                            if (!deletableFiles.contains(i2)) {
+                        if ((i1.getFileDisplayName().equalsIgnoreCase(i2.getFileDisplayName()))
+                                && (i1.getFileSize() == i2.getFileSize())
+                                && !(i1.getFilePath().equalsIgnoreCase(i2.getFilePath()))) {
+                            if(!deletableFiles.contains(i2)) {
                                 recoverableMemory += i2.getFileSize();
                                 deletableFiles.add(i2);
                             }
@@ -185,19 +200,19 @@ public class FileListDetailsActivity extends AppCompatActivity implements FileLi
                     }
                 }
             }
-            cardRecoverableMemory.setVisibility(View.VISIBLE);
-            if (recoverableMemory > 0) {
-                txtMessage.setText("YAY !!!");
-                txtSorry.setText("Recoverable Space");
-                txtSpace.setText("Around " + String.format("%.2f", getMemoryInMb(recoverableMemory)) + "Mb");
-                linDuplicateListContainer.setVisibility(View.VISIBLE);
-                AllDuplicatefileAdapter allDuplicatefileAdapter = new AllDuplicatefileAdapter(this, deletableFiles);
-                rclDuplicateList.setAdapter(allDuplicatefileAdapter);
-            } else {
-                txtMessage.setText("OHH !!!");
-                txtSorry.setText("So Sorry");
-                txtSpace.setText("No recoverable space available");
-            }
+        }
+        cardRecoverableMemory.setVisibility(View.VISIBLE);
+        if (recoverableMemory > 0) {
+            txtMessage.setText("YAY !!!");
+            txtSorry.setText("Recoverable Space");
+            txtSpace.setText("Around " + String.format("%.2f", getMemoryInMb(recoverableMemory)) + "Mb");
+            linDuplicateListContainer.setVisibility(View.VISIBLE);
+            AllDuplicatefileAdapter allDuplicatefileAdapter = new AllDuplicatefileAdapter(this, deletableFiles);
+            rclDuplicateList.setAdapter(allDuplicatefileAdapter);
+        } else {
+            txtMessage.setText("OHH !!!");
+            txtSorry.setText("So Sorry");
+            txtSpace.setText("No recoverable space is available :(");
         }
     }
 }

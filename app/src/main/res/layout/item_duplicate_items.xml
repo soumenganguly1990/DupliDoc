@@ -9,7 +9,7 @@
     android:visibility="visible"
     app:cardBackgroundColor="#fff"
     app:cardCornerRadius="2dp"
-    app:cardElevation="3dp"
+    app:cardElevation="2dp"
     app:cardUseCompatPadding="true">
 
     <LinearLayout
@@ -39,6 +39,13 @@
             android:layout_height="wrap_content"
             android:padding="6dp"
             android:text="File added date" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="6dp"
+            android:text="File Path"
+            android:id="@+id/txtFilePath"/>
 
     </LinearLayout>
 

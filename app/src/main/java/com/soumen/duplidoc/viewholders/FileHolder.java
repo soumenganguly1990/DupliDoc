@@ -14,6 +14,7 @@ public class FileHolder extends RecyclerView.ViewHolder {
     public TextView txtFileName;
     public TextView txtFileSize;
     public TextView txtFileAddDate;
+    public TextView txtFilePath;
 
     public FileHolder(View itemView) {
         super(itemView);
@@ -21,5 +22,6 @@ public class FileHolder extends RecyclerView.ViewHolder {
         txtFileName = (TextView) itemView.findViewById(R.id.txtFileName);
         txtFileSize = (TextView) itemView.findViewById(R.id.txtFileSize);
         txtFileAddDate = (TextView) itemView.findViewById(R.id.txtFileAddDate);
+        txtFilePath = (TextView) itemView.findViewById(R.id.txtFilePath);
     }
 }
