@@ -67,7 +67,7 @@ public class SplashActivity extends AppCompatActivity {
     /**
      * Check if the app is being opened for the first time or not
      */
-    private void readWhetherFirstTimeOrNot() {
+    public void readWhetherFirstTimeOrNot() {
         TinyDB tinyDB = new TinyDB(SplashActivity.this);
         if(!tinyDB.getBoolean(AppCommonValues._ISFIRSTRUNTAG)) {
             /* this is the first run, so redirect to intro page */

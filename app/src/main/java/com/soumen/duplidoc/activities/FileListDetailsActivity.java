@@ -67,7 +67,7 @@ public class FileListDetailsActivity extends AppCompatActivity implements FileLi
                     isExternalStorageAvailable = new StorageHelper().isExternalStorageReadable();
                     firstCheckForPermission();
                 }
-            }, 250);
+            }, 300);
         }
     }
 
@@ -162,57 +162,62 @@ public class FileListDetailsActivity extends AppCompatActivity implements FileLi
     private void startComparingFiles(ArrayList<CommonFileModel> fileModels) {
         long recoverableMemory = 0;
         ArrayList<CommonFileModel> deletableFiles = new ArrayList<>();
-        for (int i = 0; i < fileModels.size(); i++) {
-            CommonFileModel i1 = fileModels.get(i);
-            for (int j = i + 1; j < fileModels.size(); j++) {
-                CommonFileModel i2 = fileModels.get(j);
-                if (fileType == FileType.IMAGE) {
-                    try {
-                        if ((i1.getFileDisplayName().equalsIgnoreCase(i2.getFileDisplayName())) &&
-                                (i1.getFileSize() == i2.getFileSize()) &&
-                                (i1.getFileHeight() == i2.getFileHeight()) &&
-                                (i1.getFileWidth() == i2.getFileWidth()) &&
-                                !(i1.getFilePath().equalsIgnoreCase(i2.getFilePath()))) {
-                            if(!deletableFiles.contains(i2)) {
-                                recoverableMemory += i2.getFileSize();
-                                deletableFiles.add(i2);
+        if (fileModels == null || fileModels.size() == 0) {
+            Toast.makeText(FileListDetailsActivity.this, "No Files Found", Toast.LENGTH_SHORT).show();
+            onBackPressed();
+        } else {
+            for (int i = 0; i < fileModels.size(); i++) {
+                CommonFileModel i1 = fileModels.get(i);
+                for (int j = i + 1; j < fileModels.size(); j++) {
+                    CommonFileModel i2 = fileModels.get(j);
+                    if (fileType == FileType.IMAGE) {
+                        try {
+                            if ((i1.getFileDisplayName().equalsIgnoreCase(i2.getFileDisplayName())) &&
+                                    (i1.getFileSize() == i2.getFileSize()) &&
+                                    (i1.getFileHeight() == i2.getFileHeight()) &&
+                                    (i1.getFileWidth() == i2.getFileWidth()) &&
+                                    !(i1.getFilePath().equalsIgnoreCase(i2.getFilePath()))) {
+                                if (!deletableFiles.contains(i2)) {
+                                    recoverableMemory += i2.getFileSize();
+                                    deletableFiles.add(i2);
+                                }
                             }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else if (fileType == FileType.AUDIO || fileType == FileType.VIDEO) {
-                    try {
-                        if ((i1.getFileDisplayName().equalsIgnoreCase(i2.getFileDisplayName()))
-                                && (i1.getFileSize() == i2.getFileSize())
-                                && !(i1.getFilePath().equalsIgnoreCase(i2.getFilePath()))) {
-                            if(!deletableFiles.contains(i2)) {
-                                recoverableMemory += i2.getFileSize();
-                                deletableFiles.add(i2);
-                            }
-                            /*&&(i1.getFileSize() == i2.getFileSize()) &&
+                    } else if (fileType == FileType.AUDIO || fileType == FileType.VIDEO) {
+                        try {
+                            if ((i1.getFileDisplayName().equalsIgnoreCase(i2.getFileDisplayName()))
+                                    && (i1.getFileSize() == i2.getFileSize())
+                                    && !(i1.getFilePath().equalsIgnoreCase(i2.getFilePath()))) {
+                                if (!deletableFiles.contains(i2)) {
+                                    recoverableMemory += i2.getFileSize();
+                                    deletableFiles.add(i2);
+                                }
+                                /*&&(i1.getFileSize() == i2.getFileSize()) &&
                                     (i1.getDuration() == i2.getDuration()) &&
                                     (i1.getAlbum().equalsIgnoreCase(i1.getAlbum())) &&
                                     (i1.getArtist().equalsIgnoreCase(i1.getArtist()))*/
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
                 }
             }
-        }
-        cardRecoverableMemory.setVisibility(View.VISIBLE);
-        if (recoverableMemory > 0) {
-            txtMessage.setText("YAY !!!");
-            txtSorry.setText("Recoverable Space");
-            txtSpace.setText("Around " + String.format("%.2f", getMemoryInMb(recoverableMemory)) + "Mb");
-            linDuplicateListContainer.setVisibility(View.VISIBLE);
-            AllDuplicatefileAdapter allDuplicatefileAdapter = new AllDuplicatefileAdapter(this, deletableFiles);
-            rclDuplicateList.setAdapter(allDuplicatefileAdapter);
-        } else {
-            txtMessage.setText("OHH !!!");
-            txtSorry.setText("So Sorry");
-            txtSpace.setText("No recoverable space is available :(");
+            cardRecoverableMemory.setVisibility(View.VISIBLE);
+            if (recoverableMemory > 0) {
+                txtMessage.setText("YAY !!!");
+                txtSorry.setText("Recoverable Space");
+                txtSpace.setText("Around " + String.format("%.2f", getMemoryInMb(recoverableMemory)) + "Mb");
+                linDuplicateListContainer.setVisibility(View.VISIBLE);
+                AllDuplicatefileAdapter allDuplicatefileAdapter = new AllDuplicatefileAdapter(this, deletableFiles);
+                rclDuplicateList.setAdapter(allDuplicatefileAdapter);
+            } else {
+                txtMessage.setText("OHH !!!");
+                txtSorry.setText("So Sorry");
+                txtSpace.setText("No recoverable space is available :(");
+            }
         }
     }
 }

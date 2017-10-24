@@ -25,10 +25,10 @@ import com.soumen.duplidoc.adapters.IntroPagerAdapter;
 public class IntroActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
-    private IntroPagerAdapter myViewPagerAdapter;
+    public IntroPagerAdapter myViewPagerAdapter;
     private LinearLayout dotsLayout;
     private TextView[] dots;
-    private int[] layouts;
+    public int[] layouts;
     private Button btnSkip, btnNext;
 
     @Override
@@ -78,7 +78,7 @@ public class IntroActivity extends AppCompatActivity {
         });
     }
 
-    private void addBottomDots(int currentPage) {
+    public void addBottomDots(int currentPage) {
         dots = new TextView[layouts.length];
 
         int[] colorsActive = getResources().getIntArray(R.array.array_dot_active);
