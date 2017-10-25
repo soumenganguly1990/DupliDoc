@@ -4,14 +4,15 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.provider.MediaStore;
-
+import android.util.Log;
 import com.soumen.duplidoc.callbackinterfaces.FileListRetrievalCompleteInterface;
 import com.soumen.duplidoc.enums.FileType;
 import com.soumen.duplidoc.extras.FileMediaTypeSingleton;
 import com.soumen.duplidoc.extras.MediaConfig;
 import com.soumen.duplidoc.models.CommonFileModel;
-
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -73,6 +74,7 @@ public class FetchFilesAsyncTask extends AsyncTask<String, String, ArrayList<Com
                         mediaConfig.getColumns(), null, null, mediaConfig.getOrderBy());
                 externalCursor = mContext.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                         mediaConfig.getColumns(), null, null, mediaConfig.getOrderBy());
+                createArrayListOfFileModels();
                 break;
             case AUDIO:
                 mediaConfig = FileMediaTypeSingleton.getInstance().createAndReturnAudioConfig();
@@ -80,6 +82,7 @@ public class FetchFilesAsyncTask extends AsyncTask<String, String, ArrayList<Com
                         mediaConfig.getColumns(), null, null, mediaConfig.getOrderBy());
                 externalCursor = mContext.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                         mediaConfig.getColumns(), null, null, mediaConfig.getOrderBy());
+                createArrayListOfFileModels();
                 break;
             case VIDEO:
                 mediaConfig = FileMediaTypeSingleton.getInstance().createAndReturnVideoConfig();
@@ -87,11 +90,12 @@ public class FetchFilesAsyncTask extends AsyncTask<String, String, ArrayList<Com
                         mediaConfig.getColumns(), null, null, mediaConfig.getOrderBy());
                 externalCursor = mContext.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
                         mediaConfig.getColumns(), null, null, mediaConfig.getOrderBy());
+                createArrayListOfFileModels();
                 break;
             case TEXT:
+                checkAllFilesToCheckIfTextType();
                 break;
         }
-        createArrayListOfFileModels();
         return fileModels;
     }
 
@@ -120,27 +124,28 @@ public class FetchFilesAsyncTask extends AsyncTask<String, String, ArrayList<Com
             CommonFileModel i1 = new CommonFileModel();
             i1.setFilePath(interNalCursor.getString(interNalCursor.getColumnIndex(MediaStore.Images.Media.DATA)));
             i1.setFileDisplayName(interNalCursor.getString(interNalCursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)));
-            i1.setFileAddedDate(interNalCursor.getString(interNalCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED)));
-            i1.setFileModifiedDate(interNalCursor.getString(interNalCursor.getColumnIndex(MediaStore.Images.Media.DATE_MODIFIED)));
+            i1.setFileAddedDate(interNalCursor.getLong(interNalCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED)));
+            i1.setFileModifiedDate(interNalCursor.getLong(interNalCursor.getColumnIndex(MediaStore.Images.Media.DATE_MODIFIED)));
             if (fileType == FileType.IMAGE) {
-                i1.setFileTakenDate(interNalCursor.getString(interNalCursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN)));
+                i1.setFileTakenDate(interNalCursor.getLong(interNalCursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN)));
                 i1.setFileSize(interNalCursor.getLong(interNalCursor.getColumnIndex(MediaStore.Images.Media.SIZE)));
                 i1.setFileHeight(interNalCursor.getInt(interNalCursor.getColumnIndex(MediaStore.Images.Media.HEIGHT)));
                 i1.setFileWidth(interNalCursor.getInt(interNalCursor.getColumnIndex(MediaStore.Images.Media.WIDTH)));
             } else if (fileType == FileType.AUDIO) {
-                i1.setFileTakenDate(interNalCursor.getString(interNalCursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED)));
+                i1.setFileTakenDate(interNalCursor.getLong(interNalCursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED)));
                 i1.setFileSize(interNalCursor.getLong(interNalCursor.getColumnIndex(MediaStore.Audio.Media.SIZE)));
                 i1.setAlbum(interNalCursor.getString(interNalCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)));
                 i1.setArtist(interNalCursor.getString(interNalCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
-                i1.setDuration(interNalCursor.getString(interNalCursor.getColumnIndex(MediaStore.Audio.Media.DURATION)));
+                i1.setDuration(interNalCursor.getLong(interNalCursor.getColumnIndex(MediaStore.Audio.Media.DURATION)));
             } else if (fileType == FileType.VIDEO) {
-                i1.setFileTakenDate(interNalCursor.getString(interNalCursor.getColumnIndex(MediaStore.Video.Media.DATE_TAKEN)));
+                i1.setFileTakenDate(interNalCursor.getLong(interNalCursor.getColumnIndex(MediaStore.Video.Media.DATE_TAKEN)));
                 i1.setFileSize(interNalCursor.getLong(interNalCursor.getColumnIndex(MediaStore.Video.Media.SIZE)));
                 i1.setAlbum(interNalCursor.getString(interNalCursor.getColumnIndex(MediaStore.Video.Media.ALBUM)));
                 i1.setArtist(interNalCursor.getString(interNalCursor.getColumnIndex(MediaStore.Video.Media.ARTIST)));
-                i1.setDuration(interNalCursor.getString(interNalCursor.getColumnIndex(MediaStore.Video.Media.DURATION)));
+                i1.setDuration(interNalCursor.getLong(interNalCursor.getColumnIndex(MediaStore.Video.Media.DURATION)));
             }
             fileModels.add(i1);
+            Log.e("duration", "" + i1.getDuration());
         }
         interNalCursor.close();
     }
@@ -151,28 +156,59 @@ public class FetchFilesAsyncTask extends AsyncTask<String, String, ArrayList<Com
             CommonFileModel i1 = new CommonFileModel();
             i1.setFilePath(externalCursor.getString(externalCursor.getColumnIndex(MediaStore.Images.Media.DATA)));
             i1.setFileDisplayName(externalCursor.getString(externalCursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)));
-            i1.setFileAddedDate(externalCursor.getString(externalCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED)));
-            i1.setFileModifiedDate(externalCursor.getString(externalCursor.getColumnIndex(MediaStore.Images.Media.DATE_MODIFIED)));
+            i1.setFileAddedDate(externalCursor.getLong(externalCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED)));
+            i1.setFileModifiedDate(externalCursor.getLong(externalCursor.getColumnIndex(MediaStore.Images.Media.DATE_MODIFIED)));
             if (fileType == FileType.IMAGE) {
-                i1.setFileTakenDate(externalCursor.getString(externalCursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN)));
+                i1.setFileTakenDate(externalCursor.getLong(externalCursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN)));
                 i1.setFileSize(externalCursor.getLong(externalCursor.getColumnIndex(MediaStore.Images.Media.SIZE)));
                 i1.setFileHeight(externalCursor.getInt(externalCursor.getColumnIndex(MediaStore.Images.Media.HEIGHT)));
                 i1.setFileWidth(externalCursor.getInt(externalCursor.getColumnIndex(MediaStore.Images.Media.WIDTH)));
             } else if (fileType == FileType.AUDIO) {
-                i1.setFileTakenDate(externalCursor.getString(externalCursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED)));
+                i1.setFileTakenDate(externalCursor.getLong(externalCursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED)));
                 i1.setFileSize(externalCursor.getLong(externalCursor.getColumnIndex(MediaStore.Audio.Media.SIZE)));
                 i1.setAlbum(externalCursor.getString(externalCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)));
                 i1.setArtist(externalCursor.getString(externalCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
-                i1.setDuration(externalCursor.getString(externalCursor.getColumnIndex(MediaStore.Audio.Media.DURATION)));
+                i1.setDuration(externalCursor.getLong(externalCursor.getColumnIndex(MediaStore.Audio.Media.DURATION)));
             } else if (fileType == FileType.VIDEO) {
-                i1.setFileTakenDate(externalCursor.getString(externalCursor.getColumnIndex(MediaStore.Video.Media.DATE_TAKEN)));
+                i1.setFileTakenDate(externalCursor.getLong(externalCursor.getColumnIndex(MediaStore.Video.Media.DATE_TAKEN)));
                 i1.setFileSize(externalCursor.getLong(externalCursor.getColumnIndex(MediaStore.Video.Media.SIZE)));
                 i1.setAlbum(externalCursor.getString(externalCursor.getColumnIndex(MediaStore.Video.Media.ALBUM)));
                 i1.setArtist(externalCursor.getString(externalCursor.getColumnIndex(MediaStore.Video.Media.ARTIST)));
-                i1.setDuration(externalCursor.getString(externalCursor.getColumnIndex(MediaStore.Video.Media.DURATION)));
+                i1.setDuration(externalCursor.getLong(externalCursor.getColumnIndex(MediaStore.Video.Media.DURATION)));
             }
             fileModels.add(i1);
         }
         externalCursor.close();
+    }
+
+    private void checkAllFilesToCheckIfTextType() {
+        File sdcardObj=new File(Environment.getExternalStorageDirectory().getAbsolutePath());
+        listOfFile(sdcardObj);
+    }
+
+    private void listOfFile(File directory) {
+        if(directory.isDirectory()){
+            File[] files = directory.listFiles();
+            try {
+                for (File f : files){
+                    if(!f.isDirectory()) {
+                        if(f.getName().endsWith(".doc") || f.getName().endsWith(".txt") || f.getName().endsWith(".docx")
+                                || f.getName().endsWith(".rtf") || f.getName().endsWith(".xls") || f.getName().endsWith(".xlsx")
+                                || f.getName().endsWith(".ppt") || f.getName().endsWith(".pptx")) {
+                            CommonFileModel c1 = new CommonFileModel();
+                            c1.setFilePath(f.getAbsolutePath());
+                            c1.setFileDisplayName(f.getName());
+                            c1.setFileSize(f.length());
+                            c1.setFileAddedDate(f.lastModified());
+                            fileModels.add(c1);
+                        }
+                    } else {
+                        this.listOfFile(f);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

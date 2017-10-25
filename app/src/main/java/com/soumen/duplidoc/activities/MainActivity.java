@@ -10,16 +10,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
 import com.soumen.duplidoc.R;
 import com.soumen.duplidoc.enums.FileType;
 import com.soumen.duplidoc.extras.AppCommonValues;
-
+import com.soumen.duplidoc.utils.TinyDB;
 import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
 import io.codetail.widget.RevealLinearLayout;
@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Toolbar dupliToolbar;
     private RevealLinearLayout revMainViewHolder;
     private LinearLayout linMainRevealChild;
-
     private LinearLayout linTexts, linImages, linAudio, linVideo;
 
     @Override
@@ -45,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         getUiComponents();
         setSupportActionBar(dupliToolbar);
-        circularRevealEverything(linMainRevealChild, 1200);
+        circularRevealEverything(linMainRevealChild, 1000);
         setUpDupliDrawer();
         setUpNavigationController();
         setUpListener();
@@ -61,6 +60,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         linImages = (LinearLayout) findViewById(R.id.linImages);
         linAudio = (LinearLayout) findViewById(R.id.linAudio);
         linVideo = (LinearLayout) findViewById(R.id.linVideos);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_dashboard, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.mnuDontRememberMeAnymore:
+                workOnErasingRememberMeDetails();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void circularRevealEverything(final View view, final int duration) {
@@ -183,15 +199,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Starts next activity
-     *
      * @param _whichKey
      */
     private void startNextActivity(FileType _whichKey) {
         Intent i = new Intent(this, FileListDetailsActivity.class);
         switch (_whichKey) {
             case TEXT:
-                //i.putExtra(AppCommonValues.FILETAG, FileType.TEXT);
-                Toast.makeText(MainActivity.this, "Not Done", Toast.LENGTH_SHORT).show();
+                i.putExtra(AppCommonValues.FILETAG, FileType.TEXT);
                 break;
             case IMAGE:
                 i.putExtra(AppCommonValues.FILETAG, FileType.IMAGE);
@@ -205,5 +219,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         startActivity(i);
         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+    }
+
+    /**
+     * Falsify the password remember tag
+     */
+    private void workOnErasingRememberMeDetails() {
+        TinyDB td = new TinyDB(MainActivity.this);
+        td.putInt(AppCommonValues._REMEMBER_PWD_TAG, AppCommonValues._DONTREMEMBER);
     }
 }

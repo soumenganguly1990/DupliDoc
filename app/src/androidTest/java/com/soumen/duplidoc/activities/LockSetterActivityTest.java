@@ -23,6 +23,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+
 import io.codetail.widget.RevealFrameLayout;
 
 import static org.junit.Assert.*;
@@ -99,12 +102,14 @@ public class LockSetterActivityTest {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
+
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 CURRENT = edtPassCode.getText().length();
                 LEFT = MAX - CURRENT;
                 txtPassCodeLeft.setText(LEFT + " characters left");
             }
+
             @Override
             public void afterTextChanged(Editable editable) {
             }
@@ -138,6 +143,8 @@ public class LockSetterActivityTest {
                 txtDel.performClick();
                 assertTrue(edtPassCode.getText().toString().equals(""));
 
+                edtPassCode.setText("");
+
                 txtOne.performClick();
                 txtTwo.performClick();
                 txtThree.performClick();
@@ -151,23 +158,65 @@ public class LockSetterActivityTest {
                 assertFalse(edtPassCode.getText().toString().contains("0"));
                 assertTrue(edtPassCode.getText().toString().equals("12345678"));
 
-                // set an easy password //
                 edtPassCode.setText("1234");
+
+                chkRememberMe.setChecked(true);
+                //chkRememberMe.setChecked(false);
 
                 txtPassCodeOk.performClick();
 
                 assertTrue(td.getBoolean(AppCommonValues._ISPASSCODESET));
                 assertEquals(td.getString(AppCommonValues._PASSWORD), edtPassCode.getText().toString());
 
-                chkRememberMe.setChecked(true);
-
                 if(chkRememberMe.isChecked()) {
                     assertEquals(td.getInt(AppCommonValues._REMEMBER_PWD_TAG), AppCommonValues._DOREMEMBER);
+                    assertNotEquals(td.getInt(AppCommonValues._REMEMBER_PWD_TAG), AppCommonValues._DONTREMEMBER);
                 } else {
                     assertEquals(td.getInt(AppCommonValues._REMEMBER_PWD_TAG), AppCommonValues._DONTREMEMBER);
                 }
             }
         });
+    }
+
+    @Test
+    public void testMultipleTouchonTwoViewsAtSameTime() {
+        final CyclicBarrier gate = new CyclicBarrier(4);
+        edtPassCode.setText("1234");
+        Thread t1 = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    gate.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (BrokenBarrierException e) {
+                    e.printStackTrace();
+                }
+                txtDel.performClick();
+            }
+        };
+        Thread t2 = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    gate.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (BrokenBarrierException e) {
+                    e.printStackTrace();
+                }
+                txtPassCodeOk.performClick();
+            }
+        };
+        t1.start();
+        t2.start();
+        try {
+            gate.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (BrokenBarrierException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test

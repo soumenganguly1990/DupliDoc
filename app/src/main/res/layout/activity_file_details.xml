@@ -3,22 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:animateLayoutChanges="true">
+    android:animateLayoutChanges="true"
+    android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolListBar"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        app:title="@string/app_name"
-        app:titleTextColor="@android:color/white" />
+        android:layout_height="wrap_content"
+        android:id="@+id/appbarList"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolListBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:title="@string/app_name"
+            app:titleTextColor="@android:color/white" />
+
+    </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardRecoverableMemory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toolListBar"
+        android:layout_below="@id/appbarList"
         android:layout_margin="13dp"
         android:clickable="true"
         android:visibility="gone"
@@ -75,6 +84,7 @@
     </android.support.v7.widget.CardView>
 
     <LinearLayout
+        android:id="@+id/linDuplicateListContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/cardRecoverableMemory"
@@ -82,8 +92,7 @@
         android:layout_marginLeft="13dp"
         android:layout_marginRight="13dp"
         android:orientation="vertical"
-        android:visibility="gone"
-        android:id="@+id/linDuplicateListContainer">
+        android:visibility="gone">
 
         <com.soumen.duplidoc.utils.HelveticaBoldTextView
             android:layout_width="match_parent"
@@ -92,10 +101,10 @@
             android:textSize="17sp" />
 
         <android.support.v7.widget.RecyclerView
+            android:id="@+id/rclDuplicateList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="8dp"
-            android:id="@+id/rclDuplicateList"/>
+            android:layout_marginTop="8dp" />
 
     </LinearLayout>
 

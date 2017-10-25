@@ -211,7 +211,7 @@
                             android:padding="12dp"
                             android:gravity="center"
                             android:layout_gravity="center"
-                            android:text="Brought to you by Soumen Ganguly\nVery hopeful for a Capgemini position.. :D"
+                            android:text="Brought to you by Soumen Ganguly\nVery hopeful for a Capgemini position.. :)"
                             android:textColor="@android:color/white"
                             android:textSize="14sp"/>
 

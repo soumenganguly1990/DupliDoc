@@ -10,15 +10,15 @@ public class CommonFileModel implements Serializable {
 
     private String filePath;
     private String fileDisplayName;
-    private String fileAddedDate;
-    private String fileModifiedDate;
-    private String fileTakenDate;
+    private long fileAddedDate;
+    private long fileModifiedDate;
+    private long fileTakenDate;
     private int fileHeight;
     private int fileWidth;
     private long fileSize;
     private String album;
     private String artist;
-    private String duration;
+    private long duration;
 
     public String getFilePath() {
         return filePath;
@@ -28,27 +28,27 @@ public class CommonFileModel implements Serializable {
         this.filePath = filePath;
     }
 
-    public String getFileAddedDate() {
+    public long getFileAddedDate() {
         return fileAddedDate;
     }
 
-    public void setFileAddedDate(String fileAddedDate) {
+    public void setFileAddedDate(long fileAddedDate) {
         this.fileAddedDate = fileAddedDate;
     }
 
-    public String getFileModifiedDate() {
+    public long getFileModifiedDate() {
         return fileModifiedDate;
     }
 
-    public void setFileModifiedDate(String fileModifiedDate) {
+    public void setFileModifiedDate(long fileModifiedDate) {
         this.fileModifiedDate = fileModifiedDate;
     }
 
-    public String getFileTakenDate() {
+    public long getFileTakenDate() {
         return fileTakenDate;
     }
 
-    public void setFileTakenDate(String fileTakenDate) {
+    public void setFileTakenDate(long fileTakenDate) {
         this.fileTakenDate = fileTakenDate;
     }
 
@@ -100,11 +100,11 @@ public class CommonFileModel implements Serializable {
         this.artist = artist;
     }
 
-    public String getDuration() {
+    public long getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(long duration) {
         this.duration = duration;
     }
 }
