@@ -46,7 +46,7 @@ public class FileListDetailsActivity extends AppCompatActivity implements FileLi
     private FileType fileType;
     private AllDuplicatefileAdapter allDuplicatefileAdapter;
     private ArrayList<CommonFileModel> deletableFiles;
-    private int READ_REQUEST_CODE = 101;
+    private int PERMIT_ALL = 101;
     private Toolbar toolListBar;
     private HelveticaBoldTextView txtMessage, txtSorry;
     private TextView txtSpace;
@@ -110,10 +110,12 @@ public class FileListDetailsActivity extends AppCompatActivity implements FileLi
      */
     private void firstCheckForPermission() {
         if (Build.VERSION.SDK_INT >= 23) {
-            if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if ((checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+                    && (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)) {
                 proceedWithNormalWorkFlowFromHere();
             } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_REQUEST_CODE);
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMIT_ALL);
             }
         } else {
             proceedWithNormalWorkFlowFromHere();
@@ -122,6 +124,8 @@ public class FileListDetailsActivity extends AppCompatActivity implements FileLi
 
     /**
      * Permission has been given, so proceed with normal workflow of getting all the files and whatever next
+     *
+     * NOT REALLY needed, it has become redundant
      */
     private void proceedWithNormalWorkFlowFromHere() {
         switch (fileType) {
@@ -149,7 +153,7 @@ public class FileListDetailsActivity extends AppCompatActivity implements FileLi
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
             proceedWithNormalWorkFlowFromHere();
         } else {
             showWhyThisPermissionIsRequired();
@@ -197,6 +201,30 @@ public class FileListDetailsActivity extends AppCompatActivity implements FileLi
     @Override
     public void onFileListRetrievalCompleted(ArrayList<CommonFileModel> fileModels) {
         startComparingFiles(fileModels);
+    }
+
+    /**
+     * Sets the value of duplicate files to the deletable file list
+     * @param fileModels
+     */
+    public void setDuplicateFileList(ArrayList<CommonFileModel> fileModels) {
+        if(fileModels != null) {
+            this.deletableFiles = fileModels;
+        } else {
+            deletableFiles = null;
+        }
+    }
+
+    /**
+     * Returns the list of deletable files
+     * @return
+     */
+    public ArrayList<CommonFileModel> getDuplicateFileList() {
+        if(deletableFiles != null) {
+            return deletableFiles;
+        } else {
+            return null;
+        }
     }
 
     /* make it an independant function */
@@ -282,9 +310,7 @@ public class FileListDetailsActivity extends AppCompatActivity implements FileLi
     private void showWhyThisPermissionIsRequired() {
         final AlertDialog.Builder permissionDialogBuilder = new AlertDialog.Builder(FileListDetailsActivity.this);
         permissionDialogBuilder.setTitle(getResources().getString(R.string.app_name));
-        permissionDialogBuilder.setMessage("Without this permission the app would not be able to get the details of the" +
-                "files. Press OK to open the settings page for the app, click on permissions, enable the permission. Press Cancel" +
-                "to dismiss.");
+        permissionDialogBuilder.setMessage(getString(R.string.deletemsg));
         permissionDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -373,7 +399,11 @@ public class FileListDetailsActivity extends AppCompatActivity implements FileLi
                     }
                     break;
             }
-            allDuplicatefileAdapter.notifyDataSetChanged();
+            try {
+                allDuplicatefileAdapter.notifyDataSetChanged();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             Toast.makeText(FileListDetailsActivity.this, "Nothing to sort", Toast.LENGTH_SHORT).show();
         }

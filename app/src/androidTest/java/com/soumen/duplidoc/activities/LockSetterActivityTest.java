@@ -1,15 +1,10 @@
 package com.soumen.duplidoc.activities;
 
-import android.graphics.Color;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Vibrator;
 import android.support.test.rule.ActivityTestRule;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
-import android.widget.CompoundButton;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,6 +23,15 @@ import java.util.concurrent.CyclicBarrier;
 
 import io.codetail.widget.RevealFrameLayout;
 
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.core.AllOf.allOf;
 import static org.junit.Assert.*;
 
 /**
@@ -141,6 +145,7 @@ public class LockSetterActivityTest {
                 txtDel.performClick();
                 txtDel.performClick();
                 txtDel.performClick();
+
                 assertTrue(edtPassCode.getText().toString().equals(""));
 
                 edtPassCode.setText("");
@@ -161,14 +166,18 @@ public class LockSetterActivityTest {
                 edtPassCode.setText("1234");
 
                 chkRememberMe.setChecked(true);
-                //chkRememberMe.setChecked(false);
 
                 txtPassCodeOk.performClick();
 
                 assertTrue(td.getBoolean(AppCommonValues._ISPASSCODESET));
                 assertEquals(td.getString(AppCommonValues._PASSWORD), edtPassCode.getText().toString());
 
-                if(chkRememberMe.isChecked()) {
+                if(lockSetterActivity != null) {
+                    onView(withText("Password saved successfully")).inRoot(withDecorView(not(is(lockSetterActivity
+                            .getWindow().getDecorView())))).check(matches(isDisplayed()));
+                }
+
+                if (chkRememberMe.isChecked()) {
                     assertEquals(td.getInt(AppCommonValues._REMEMBER_PWD_TAG), AppCommonValues._DOREMEMBER);
                     assertNotEquals(td.getInt(AppCommonValues._REMEMBER_PWD_TAG), AppCommonValues._DONTREMEMBER);
                 } else {

@@ -10,7 +10,7 @@ import android.util.Log;
 import com.soumen.duplidoc.callbackinterfaces.FileListRetrievalCompleteInterface;
 import com.soumen.duplidoc.enums.FileType;
 import com.soumen.duplidoc.extras.FileMediaTypeSingleton;
-import com.soumen.duplidoc.extras.MediaConfig;
+import com.soumen.duplidoc.models.MediaConfig;
 import com.soumen.duplidoc.models.CommonFileModel;
 import java.io.File;
 import java.util.ArrayList;
@@ -29,6 +29,9 @@ public class FetchFilesAsyncTask extends AsyncTask<String, String, ArrayList<Com
     private Cursor interNalCursor, externalCursor;
     private ProgressDialog progressDialog;
 
+    /* singleton ref */
+    private FileMediaTypeSingleton fileMediaTypeSingleton = null;
+
     /* callback interface */
     public FileListRetrievalCompleteInterface mFileListRetrievalCompleteInterface = null;
 
@@ -36,6 +39,7 @@ public class FetchFilesAsyncTask extends AsyncTask<String, String, ArrayList<Com
         this.mContext = mContext;
         this.fileType = fileType;
         fileModels = new ArrayList<CommonFileModel>();
+        fileMediaTypeSingleton = FileMediaTypeSingleton.getInstance();
     }
 
     public FetchFilesAsyncTask(Context mContext, FileType fileType, boolean isExternalMemoryPresent) {
@@ -69,7 +73,7 @@ public class FetchFilesAsyncTask extends AsyncTask<String, String, ArrayList<Com
     protected ArrayList<CommonFileModel> doInBackground(String... strings) {
         switch (fileType) {
             case IMAGE:
-                mediaConfig = FileMediaTypeSingleton.getInstance().createAndReturnImageConfig();
+                mediaConfig = fileMediaTypeSingleton.createAndReturnImageConfig();
                 interNalCursor = mContext.getContentResolver().query(MediaStore.Images.Media.INTERNAL_CONTENT_URI,
                         mediaConfig.getColumns(), null, null, mediaConfig.getOrderBy());
                 externalCursor = mContext.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
@@ -77,7 +81,7 @@ public class FetchFilesAsyncTask extends AsyncTask<String, String, ArrayList<Com
                 createArrayListOfFileModels();
                 break;
             case AUDIO:
-                mediaConfig = FileMediaTypeSingleton.getInstance().createAndReturnAudioConfig();
+                mediaConfig = fileMediaTypeSingleton.createAndReturnAudioConfig();
                 interNalCursor = mContext.getContentResolver().query(MediaStore.Audio.Media.INTERNAL_CONTENT_URI,
                         mediaConfig.getColumns(), null, null, mediaConfig.getOrderBy());
                 externalCursor = mContext.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
@@ -85,7 +89,7 @@ public class FetchFilesAsyncTask extends AsyncTask<String, String, ArrayList<Com
                 createArrayListOfFileModels();
                 break;
             case VIDEO:
-                mediaConfig = FileMediaTypeSingleton.getInstance().createAndReturnVideoConfig();
+                mediaConfig = fileMediaTypeSingleton.createAndReturnVideoConfig();
                 interNalCursor = mContext.getContentResolver().query(MediaStore.Video.Media.INTERNAL_CONTENT_URI,
                         mediaConfig.getColumns(), null, null, mediaConfig.getOrderBy());
                 externalCursor = mContext.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,

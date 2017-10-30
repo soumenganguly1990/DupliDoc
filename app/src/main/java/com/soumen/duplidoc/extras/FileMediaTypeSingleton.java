@@ -2,6 +2,8 @@ package com.soumen.duplidoc.extras;
 
 import android.provider.MediaStore;
 
+import com.soumen.duplidoc.models.MediaConfig;
+
 /**
  * Created by Soumen on 10/22/2017.
  */
@@ -39,17 +41,17 @@ public class FileMediaTypeSingleton {
         return fileMediaTypeSingleton;
     }
 
-    public static MediaConfig createAndReturnImageConfig() {
+    public MediaConfig createAndReturnImageConfig() {
         MediaConfig imageMediaConfig = new MediaConfig(imageColumns, imageOrderBy);
         return imageMediaConfig;
     }
 
-    public static MediaConfig createAndReturnAudioConfig() {
+    public MediaConfig createAndReturnAudioConfig() {
         MediaConfig audioMediaConfig = new MediaConfig(audioColumns, audioOrderBy);
         return audioMediaConfig;
     }
 
-    public static MediaConfig createAndReturnVideoConfig() {
+    public MediaConfig createAndReturnVideoConfig() {
         MediaConfig videoMediaConfig = new MediaConfig(videoColumns, videoOrderBy);
         return videoMediaConfig;
     }

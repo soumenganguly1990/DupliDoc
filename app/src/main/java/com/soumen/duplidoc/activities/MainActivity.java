@@ -1,5 +1,7 @@
 package com.soumen.duplidoc.activities;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -186,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }, AppCommonValues._DRAWERDELAY);
         switch (menuId) {
             case R.id.mnuDupli:
-                Toast.makeText(MainActivity.this, "Not done yet", Toast.LENGTH_SHORT).show();
+                showAboutDialog();
                 break;
             case R.id.mnuMe:
                 startWebLinks("https://www.linkedin.com/in/soumenganguly1990");
@@ -222,10 +225,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
+     * Shows a custom dialog with some info on it
+     */
+    private void showAboutDialog() {
+        final Dialog aboutDialog = new Dialog(MainActivity.this);
+        aboutDialog.setContentView(R.layout.aboutdialog);
+        AppCompatButton btnAboutOk = (AppCompatButton) aboutDialog.findViewById(R.id.btnAboutOk);
+        aboutDialog.setCancelable(true);
+        aboutDialog.setCanceledOnTouchOutside(true);
+        btnAboutOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                aboutDialog.dismiss();
+            }
+        });
+        aboutDialog.show();
+    }
+
+    /**
      * Falsify the password remember tag
      */
     private void workOnErasingRememberMeDetails() {
         TinyDB td = new TinyDB(MainActivity.this);
         td.putInt(AppCommonValues._REMEMBER_PWD_TAG, AppCommonValues._DONTREMEMBER);
+        Toast.makeText(MainActivity.this, "You have been forgotten", Toast.LENGTH_SHORT).show();
     }
 }

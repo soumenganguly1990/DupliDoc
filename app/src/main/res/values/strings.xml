@@ -8,5 +8,7 @@
 
     <string name="opendrawer">Open</string>
     <string name="closedrawer">Close</string>
+    
+    <string name="deletemsg">"Without these permissions the app would not be able to get the details of the files or would not be able to operate on them. Press OK to open the settings page for the app, click on permissions, enable the permission. Press Cancel to dismiss."</string>
 
 </resources>

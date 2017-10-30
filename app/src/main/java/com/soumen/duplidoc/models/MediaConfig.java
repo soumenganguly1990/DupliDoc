@@ -1,4 +1,4 @@
-package com.soumen.duplidoc.extras;
+package com.soumen.duplidoc.models;
 
 /**
  * Created by Soumen on 10/22/2017.
